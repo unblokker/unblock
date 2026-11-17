@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>unblokked</title>
+<style>
+:root {
+  --bg: #0a0a0f;
+  --surface: #12121a;
+  --card: #1a1a26;
+  --card-hover: #22223a;
+  --border: #2a2a3e;
+  --text: #e8e8f0;
+  --muted: #7878a0;
+  --accent: #7c5cfc;
+  --accent-hover: #9b7fff;
+  --accent-dim: rgba(124,92,252,0.15);
+  --green: #4ade80;
+  --yellow: #facc15;
+  --red: #f87171;
+  --radius: 10px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg); color: var(--text); line-height: 1.5; min-height: 100vh;
+}
+.container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.25rem; }
+
+header { text-align: center; padding: 2rem 0 1.5rem; }
+header h1 {
+  font-size: 2.8rem; font-weight: 800;
+  background: linear-gradient(135deg, var(--accent), #c084fc);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+header p { color: var(--muted); margin-top: 0.4rem; font-size: 1rem; }
+
+nav { display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+nav button {
+  padding: 0.5rem 1.2rem; border-radius: 99px;
+  border: 1px solid var(--border); background: var(--surface);
+  color: var(--muted); font-size: 0.85rem; cursor: pointer; transition: all 0.2s; font-weight: 500;
+}
+nav button:hover, nav button.active { background: var(--accent-dim); border-color: var(--accent); color: var(--text); }
+
+/* SEARCH */
+.search-bar {
+  width: 100%; max-width: 400px; margin: 0 auto 1.5rem;
+  padding: 0.6rem 1rem; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 8px;
+  color: var(--text); font-size: 0.9rem;
+}
+.search-bar:focus { outline: none; border-color: var(--accent); }
+
+/* PROXY GRID */
+.proxy-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem; margin-bottom: 2rem;
+}
+.proxy-tile {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.25rem 1rem;
+  cursor: pointer; transition: all 0.2s; position: relative;
+}
+.proxy-tile:hover { background: var(--card-hover); border-color: var(--accent); transform: translateY(-2px); }
+.proxy-tile .tile-name { font-weight: 700; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+.proxy-tile .tile-name .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+.proxy-tile .tile-count { font-size: 0.75rem; color: var(--muted); margin-top: 0.3rem; }
+.proxy-tile .tile-arrow { position: absolute; top: 1.25rem; right: 1rem; font-size: 0.8rem; color: var(--muted); }
+
+/* DETAIL PAGE */
+.detail-page { display: none; }
+.detail-page.active { display: block; }
+.list-page.hidden { display: none; }
+.back-btn {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.5rem 1rem; border-radius: 8px;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text); font-size: 0.85rem; cursor: pointer; margin-bottom: 1.5rem;
+}
+.back-btn:hover { border-color: var(--accent); }
+.detail-header { margin-bottom: 1.5rem; }
+.detail-header h2 { font-size: 1.6rem; font-weight: 800; margin-bottom: 0.3rem; }
+.detail-header .detail-meta { color: var(--muted); font-size: 0.85rem; }
+.detail-header .detail-actions { display: flex; gap: 0.5rem; margin-top: 0.75rem; }
+.detail-header .detail-actions button {
+  padding: 0.4rem 0.9rem; border-radius: 6px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--muted); font-size: 0.8rem; cursor: pointer;
+}
+.detail-header .detail-actions button:hover { border-color: var(--accent); color: var(--text); }
+
+.links-list { display: flex; flex-direction: column; gap: 0.4rem; }
+.link-item {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.6rem 0.8rem; background: var(--card);
+  border: 1px solid var(--border); border-radius: 8px;
+  font-size: 0.82rem; transition: border-color 0.15s;
+}
+.link-item:hover { border-color: var(--accent); }
+.link-item .link-status { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.link-status.online { background: var(--green); }
+.link-status.offline { background: var(--red); }
+.link-status.checking { background: var(--yellow); animation: pulse 1s infinite; }
+@keyframes pulse { 50% { opacity: 0.3; } }
+.link-item a {
+  flex: 1; color: var(--text); text-decoration: none; word-break: break-all;
+}
+.link-item a:hover { color: var(--accent); }
+.link-item .copy-btn {
+  padding: 0.25rem 0.6rem; border-radius: 4px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--muted); font-size: 0.7rem; cursor: pointer;
+  white-space: nowrap;
+}
+.link-item .copy-btn:hover { border-color: var(--accent); color: var(--text); }
+.link-item .copy-btn.copied { border-color: var(--green); color: var(--green); }
+
+/* CHAT */
+.chat-box { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; margin-bottom: 1rem; }
+.chat-messages { height: 350px; overflow-y: auto; padding: 0.5rem; margin-bottom: 0.75rem; }
+.chat-msg { padding: 0.4rem 0.6rem; margin-bottom: 0.4rem; border-radius: 6px; font-size: 0.85rem; background: var(--surface); }
+.chat-msg .msg-user { font-weight: 700; margin-right: 0.4rem; }
+.chat-msg .msg-role { font-size: 0.6rem; padding: 0.1rem 0.4rem; border-radius: 99px; margin-left: 0.3rem; font-weight: 600; }
+.msg-role.helper { background: var(--accent-dim); color: var(--accent); }
+.msg-role.admin { background: rgba(251,191,36,0.15); color: var(--yellow); }
+.msg-role.owner { background: rgba(248,113,113,0.15); color: var(--red); }
+.chat-input-row { display: flex; gap: 0.5rem; }
+.chat-input-row input {
+  flex: 1; padding: 0.6rem 0.8rem;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 6px; color: var(--text); font-size: 0.9rem;
+}
+.chat-input-row input:focus { outline: none; border-color: var(--accent); }
+.chat-input-row button { padding: 0.6rem 1.2rem; border-radius: 6px; background: var(--accent); border: none; color: #fff; font-weight: 600; cursor: pointer; }
+
+/* AUTH */
+.auth-box { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; max-width: 400px; margin: 0 auto; }
+.auth-box h3 { margin-bottom: 1rem; font-size: 1.1rem; }
+.auth-box label { font-size: 0.8rem; color: var(--muted); display: block; margin-bottom: 0.3rem; }
+.auth-box input {
+  width: 100%; padding: 0.6rem 0.8rem; margin-bottom: 1rem;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 6px; color: var(--text); font-size: 0.9rem;
+}
+.auth-box input:focus { outline: none; border-color: var(--accent); }
+.auth-box .btn { width: 100%; padding: 0.6rem; border-radius: 6px; background: var(--accent); border: none; color: #fff; font-weight: 600; cursor: pointer; font-size: 0.9rem; }
+.auth-box .btn:hover { background: var(--accent-hover); }
+.auth-box .switch-link { text-align: center; margin-top: 1rem; font-size: 0.8rem; color: var(--muted); }
+.auth-box .switch-link a { color: var(--accent); cursor: pointer; text-decoration: none; }
+.auth-error { color: var(--red); font-size: 0.8rem; margin-bottom: 0.5rem; display: none; }
+
+/* MODAL */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; }
+.modal-overlay.show { display: flex; }
+.modal { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; width: 90%; max-width: 400px; }
+.modal h3 { margin-bottom: 1rem; font-size: 1.1rem; }
+.modal label { font-size: 0.8rem; color: var(--muted); display: block; margin-bottom: 0.3rem; }
+.modal input { width: 100%; padding: 0.6rem 0.8rem; margin-bottom: 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 0.9rem; }
+.modal input:focus { outline: none; border-color: var(--accent); }
+.modal .btn-row { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+.modal .btn { flex: 1; padding: 0.6rem; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; font-size: 0.85rem; }
+.modal .btn-primary { background: var(--accent); color: #fff; }
+.modal .btn-secondary { background: var(--surface); color: var(--muted); border: 1px solid var(--border); }
+
+.suggest-btn {
+  position: fixed; bottom: 1.5rem; right: 1.5rem;
+  width: 52px; height: 52px; border-radius: 50%;
+  background: var(--accent); border: none; color: #fff; font-size: 1.5rem; cursor: pointer;
+  box-shadow: 0 4px 20px rgba(124,92,252,0.4); transition: transform 0.2s;
+  display: flex; align-items: center; justify-content: center; z-index: 100;
+}
+.suggest-btn:hover { transform: scale(1.1); }
+
+/* ADMIN */
+.admin-panel { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1rem; }
+.admin-panel h3 { margin-bottom: 1rem; font-size: 1rem; }
+.suggestion-item { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem; margin-bottom: 0.5rem; font-size: 0.85rem; }
+.suggestion-item .s-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; }
+.suggestion-item .s-name { font-weight: 700; }
+.suggestion-item .s-actions { display: flex; gap: 0.4rem; }
+.suggestion-item .s-actions button { padding: 0.3rem 0.7rem; border-radius: 4px; border: none; font-size: 0.75rem; font-weight: 600; cursor: pointer; }
+.s-actions .approve { background: var(--green); color: #000; }
+.s-actions .reject { background: var(--red); color: #000; }
+.suggestion-item .s-link { color: var(--accent); font-size: 0.8rem; word-break: break-all; text-decoration: none; display: block; margin-bottom: 0.3rem; }
+.suggestion-item .s-link:hover { text-decoration: underline; }
+.suggestion-item .s-meta { font-size: 0.7rem; color: var(--muted); }
+
+.user-badge { display: inline-flex; align-items: center; gap: 0.4rem; background: var(--surface); border: 1px solid var(--border); border-radius: 99px; padding: 0.3rem 0.8rem; font-size: 0.8rem; margin-top: 0.5rem; }
+.user-badge .role { font-weight: 700; font-size: 0.7rem; }
+
+.section-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+.badge { font-size: 0.65rem; padding: 0.15rem 0.5rem; border-radius: 99px; background: var(--accent); color: #fff; font-weight: 600; text-transform: uppercase; }
+
+footer { text-align: center; padding: 2rem 0; color: var(--muted); font-size: 0.8rem; border-top: 1px solid var(--border); margin-top: 2rem; }
+
+@media (max-width: 600px) {
+  header h1 { font-size: 2rem; }
+  .proxy-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+  .container { padding: 1rem; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>unblokked.</h1>
+  <p>Click a proxy to see all its links.</p>
+  <div id="userBadge"></div>
+</header>
+
+<nav>
+  <button class="active" onclick="showSection('proxies')">Proxies</button>
+  <button onclick="showSection('chat')">Chat</button>
+  <button id="navAdmin" style="display:none;" onclick="showSection('admin')">Admin</button>
+  <button id="navAuth" onclick="showSection('auth')">Sign In</button>
+</nav>
+
+<!-- LIST PAGE -->
+<div id="section-proxies">
+  <div class="list-page" id="listPage">
+    <input type="text" class="search-bar" id="searchBar" placeholder="🔍 Search proxies..." oninput="filterProxies()">
+    <div class="section-title">Stealth Proxies <span class="badge" id="proxyCount">0</span></div>
+    <div class="proxy-grid" id="proxyGrid"></div>
+  </div>
+  <!-- DETAIL PAGE -->
+  <div class="detail-page" id="detailPage">
+    <button class="back-btn" onclick="goBack()">← Back to all proxies</button>
+    <div class="detail-header" id="detailHeader"></div>
+    <div class="links-list" id="linksList"></div>
+  </div>
+</div>
+
+<div id="section-chat" style="display:none;">
+  <div class="chat-box">
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-input-row">
+      <input type="text" id="chatInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendChat()">
+      <button onclick="sendChat()">Send</button>
+    </div>
+  </div>
+</div>
+
+<div id="section-admin" style="display:none;">
+  <div class="admin-panel">
+    <h3>📋 Pending Suggestions</h3>
+    <div id="suggestionsList"><p style="color:var(--muted);font-size:0.85rem;">No pending suggestions.</p></div>
+  </div>
+  <div class="admin-panel" id="banPanel" style="display:none;">
+    <h3>🚫 Ban User</h3>
+    <input type="text" id="banUid" placeholder="Enter UID to ban" style="width:100%;padding:0.5rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);margin-bottom:0.5rem;">
+    <button onclick="banUser()" style="padding:0.4rem 1rem;border-radius:6px;background:var(--red);border:none;color:#000;font-weight:600;cursor:pointer;">Ban</button>
+  </div>
+  <div class="admin-panel" id="ownerPanel" style="display:none;">
+    <h3>👑 Manage Admins</h3>
+    <input type="text" id="adminUid" placeholder="Enter UID" style="width:100%;padding:0.5rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);margin-bottom:0.5rem;">
+    <div style="display:flex;gap:0.5rem;">
+      <button onclick="makeAdmin()" style="padding:0.4rem 1rem;border-radius:6px;background:var(--yellow);border:none;color:#000;font-weight:600;cursor:pointer;">Make Admin</button>
+      <button onclick="removeAdmin()" style="padding:0.4rem 1rem;border-radius:6px;background:var(--red);border:none;color:#000;font-weight:600;cursor:pointer;">Remove Admin</button>
+    </div>
+  </div>
+</div>
+
+<div id="section-auth" style="display:none;">
+  <div class="auth-box" id="loginBox">
+    <h3>Sign In</h3>
+    <p class="auth-error" id="loginError"></p>
+    <label>Email</label>
+    <input type="email" id="loginEmail" placeholder="you@email.com">
+    <label>Password</label>
+    <input type="password" id="loginPass" placeholder="••••••••">
+    <button class="btn" onclick="doLogin()">Sign In</button>
+    <div class="switch-link">No account? <a onclick="toggleAuth('register')">Sign Up</a></div>
+  </div>
+  <div class="auth-box" id="registerBox" style="display:none;">
+    <h3>Create Account</h3>
+    <p class="auth-error" id="regError"></p>
+    <label>Username</label>
+    <input type="text" id="regUsername" placeholder="coolname123">
+    <label>Email</label>
+    <input type="email" id="regEmail" placeholder="you@email.com">
+    <label>Password (min 6 chars)</label>
+    <input type="password" id="regPass" placeholder="••••••••">
+    <button class="btn" onclick="doRegister()">Sign Up</button>
+    <div class="switch-link">Have an account? <a onclick="toggleAuth('login')">Sign In</a></div>
+  </div>
+</div>
+
+</div>
+
+<button class="suggest-btn" onclick="openModal()" title="Suggest a Proxy">+</button>
+
+<div class="modal-overlay" id="suggestModal">
+  <div class="modal">
+    <h3>Suggest a Proxy</h3>
+    <label>Proxy Name</label>
+    <input type="text" id="suggestName" placeholder="e.g. Nebulo">
+    <label>Link</label>
+    <input type="url" id="suggestLink" placeholder="https://...">
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="submitSuggestion()">Submit</button>
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+    </div>
+    <p style="font-size:0.7rem;color:var(--muted);margin-top:1rem;">Suggestions are reviewed by admins. If approved, you get the Helper tag.</p>
+  </div>
+</div>
+
+<footer>unblokked · Firebase powered</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getDatabase, ref, set, push, onValue, update, remove, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBowtVKpNm3diK3NiBNzNDroSqMz4-cArk",
+  authDomain: "sword-rng.firebaseapp.com",
+  databaseURL: "https://sword-rng-default-rtdb.firebaseio.com",
+  projectId: "sword-rng",
+  storageBucket: "sword-rng.firebasestorage.app",
+  messagingSenderId: "23985467126",
+  appId: "1:23985467126:web:e4d292731995d7e399c6d7",
+  measurementId: "G-1CCJM8DYE7"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+let currentUser = null, currentRole = null, currentUsername = null;
+let allProxies = [], proxiesListener = null, chatListener = null;
+let currentDetailIdx = -1;
+
+// ─── PROXY DATA ───────────────────────────────────────────
+const cherriCDNs = [
+  'https://cdn.jsdelivr.net/gh/username9927282/cherrisvg@main/index.svg',
+  'https://fastly.jsdelivr.net/gh/username9927282/cherrisvg@main/index.svg',
+  'https://gcore.jsdelivr.net/gh/username9927282/cherrisvg@main/index.svg',
+  'https://quantil.jsdelivr.net/gh/username9927282/cherrisvg@main/index.svg',
+  'https://jsdelivr.b-cdn.net/gh/username9927282/cherrisvg@main/index.svg',
+  'https://originfastly.jsdelivr.net/gh/username9927282/cherrisvg@main/index.svg',
+  'https://testingcf.jsdelivr.net/gh/username9927282/cherrisvg@main/index.svg',
+  'https://rawcdn.jsdelivr.net/gh/username9927282/cherrisvg@main/index.svg',
+  'https://unpkg.com/username9927282/cherrisvg/index.svg'
+];
+
+function buildCherriLinks() {
+  const links = [
+    "https://s3.amazonaws.com/chrisets/index.svg",
+    "https://s3.us-east-1.amazonaws.com/ulg3/index.html",
+    "https://ulg3.s3.amazonaws.com/index.html",
+    "https://ulg3.s3.us-east-1.amazonaws.com/index.html",
+    "https://s3.us-east-1.amazonaws.com/0n38/index.html",
+    "https://0n38.s3.us-east-1.amazonaws.com/index.html"
+  ];
+  for (let i = 1; i <= 76; i++) {
+    cherriCDNs.forEach(cdn => links.push(cdn + '?' + i));
+  }
+  return links;
+}
+
+const fallbackProxies = [
+  { name: "Cherri", links: buildCherriLinks() },
+  { name: "Fern", links: [
+    "https://ferndc.s3.amazonaws.com/math.html",
+    "https://ferndc.s3.us-east-1.amazonaws.com/math.html",
+    "https://ferndc.s3.dualstack.us-east-1.amazonaws.com/math.html",
+    "https://s3.amazonaws.com/ferndc/math.html",
+    "https://s3.us-east-1.amazonaws.com/ferndc/math.html",
+    "https://s3.dualstack.us-east-1.amazonaws.com/ferndc/math.html",
+    "https://ferndc.s3.amazonaws.com/index.svg",
+    "https://ferndc.s3.us-east-1.amazonaws.com/index.svg",
+    "https://ferndc.s3.dualstack.us-east-1.amazonaws.com/index.svg",
+    "https://s3.amazonaws.com/ferndc/index.svg",
+    "https://s3.us-east-1.amazonaws.com/ferndc/index.svg",
+    "https://s3.dualstack.us-east-1.amazonaws.com/ferndc/index.svg"
+  ]},
+  { name: "Nebulo", links: [
+    "https://page-jail1.naughtybaptistbrewery.co/",
+    "https://loft-kept8.naughtybaptistbrewery.com/",
+    "https://loaf-tiny8.naughtybaptistbrewery.com/",
+    "https://cope7.chompchomp.ca/",
+    "https://germ-foil1.chompchomp.ca/",
+    "https://side-fins4.chompchomp.ca/",
+    "https://tens4.chompchomp.ca/",
+    "https://kits7.mesaayuda.net/",
+    "https://hang1.manetti.cl/",
+    "https://idle-head1.ramos90.ca/",
+    "https://dupe-alps5.digresia.com.ar/",
+    "https://levy7.swetaadhikari.com.np/",
+    "https://duly6.szerelo9.hu/",
+    "https://font6.indiaguru.com/",
+    "https://rats-hilt3.kinemasot.cl/",
+    "https://gays-shri3.majoitus.ee/",
+    "https://pass8.kooh.cl/",
+    "http://nebulo-student-portal.ddns.berlin/",
+    "https://english.matheusarruda.com/",
+    "https://robotics.robohub.ro/",
+    "https://stem.robohub.ro/",
+    "https://hat.senegocia.cl/",
+    "https://tool.doriswel.com/",
+    "https://bull.yarnowl.com/",
+    "https://fivefour.samirajoshi.com.np/",
+    "https://job.joseulloa.cl/",
+    "https://stan.confiarriendo.cl/",
+    "https://ring.carluciocruzfotografia.com.br/",
+    "https://bang.7dejunio.com.ar/",
+    "https://bio.pyroelectric.net/",
+    "https://cat.pyroelectric.net/",
+    "https://cord.pyroelectric.net/",
+    "https://jobs.pyroelectric.net/",
+    "https://notes.pyroelectric.net/",
+    "https://batch.doriswel.com/",
+    "https://sites.google.com/view/advancedcalculator2/home",
+    "https://testinga.mooo.com/",
+    "https://testing.farted.net/",
+    "https://booger.riteshp.com.np/",
+    "https://worldwar.pal-wars.com/",
+    "https://graphics.rendering.ptanatidae.com/",
+    "https://sync.repository.satusatumedia.com/",
+    "https://reference.manual.biztoe.com/",
+    "https://university.college.srirupa.com/",
+    "https://campus.library.forty1customs.com/",
+    "https://research.knowledge.fondantymas.com/",
+    "https://learning.education.infoudec.org/",
+    "https://examination.certificate.flightalert24.com/",
+    "https://academic.classwork.informationaddiction.com/",
+    "https://algebra.geometry.joysizm.org/",
+    "https://calculus.trigonometry.1000doors.com/",
+    "https://schoolwork.coursework.bythor.com/",
+    "https://74.208.73.27.traefik.me/"
+  ]},
+  { name: "Interstellar", links: [
+    "https://gointerstellar.app",
+    "https://x.j0.icom.org.np/",
+    "https://snapshot.photography.backriverphotography.com/",
+    "https://mystic.xyz.moochurch.com/",
+    "https://forum.cloud.rigaprecast.com/",
+    "https://sunrise.sun.2of1.org/",
+    "https://xp.x14n.org/",
+    "https://school-eta-beige.vercel.app/",
+    "https://interstellar-v4-1.imbubbo.repl.co",
+    "https://interstellar.imbubbo.repl.co",
+    "https://interstellarai.vercel.app/",
+    "https://interstellar-production-5e5b.up.railway.app",
+    "https://interstellar-production-730e.up.railway.app",
+    "https://interstellarofficial.gq"
+  ]},
+  { name: "Doge Unblocker V5", links: [
+    "https://doge-pr0xy.de",
+    "https://doge.cx",
+    "https://proxy.doge.energy",
+    "https://doge.cf",
+    "https://doge.avanthay.me",
+    "https://proxy.pigeon.lol",
+    "https://unblock.cat",
+    "https://doge.quinn.is",
+    "https://doge.unblocker.rip",
+    "https://doge.re",
+    "https://dogenetwork.uk.ms/",
+    "https://dogenetwork.ftp.sh/"
+  ]},
+  { name: "CroxyProxy", links: [
+    "https://www.croxyproxy.com/",
+    "https://www.croxyproxy.net/",
+    "https://www.croxyproxy.rocks/",
+    "https://cdn.croxyproxy.com/",
+    "https://cdn.croxyproxy.net/",
+    "https://cdn.croxyproxy.rocks/",
+    "https://www.croxy.org/"
+  ]},
+  { name: "BlockAway", links: [
+    "https://www.blockaway.net/",
+    "https://cdn.blockaway.net/",
+    "https://www.youtubeunblocked.live/",
+    "https://cdn.youtubeunblocked.live/"
+  ]},
+  { name: "Petezah", links: [
+    "https://petezahgames.com",
+    "https://d3tecwpbnz01jy.cloudfront.net",
+    "https://accounting.tutoringservices.site.cdn.cloudflare.net",
+    "https://sage.task.susanbaerg.com",
+    "https://data.think.infoudec.org",
+    "https://science.jobvn.com",
+    "https://math.zearn.1copa.com",
+    "https://petezah.pages.dev"
+  ]},
+  { name: "Rosin", links: [
+    "https://ideas.orchid-idea.com/",
+    "https://sosa.centromariapolis.cl/",
+    "https://followmytiktok.centromariapolis.cl/",
+    "https://wegondoubleback.gyalsanglama.com.np/",
+    "https://weup.casadotricolor.com.br/",
+    "https://studioexpresstt.com/",
+    "https://4to.pics/"
+  ]},
+  { name: "Galaxy V7", links: [
+    "https://glxy.b-cdn.net/",
+    "https://hope.onlyforskolarship.online/",
+    "https://k-12.kwgranitecountertops.com/",
+    "https://math-tutoring.streetdirectory.sg/"
+  ]},
+  { name: "Solara", links: [
+    "https://solara.mysaol.com",
+    "https://solara.hornburst.com",
+    "https://solara.dialogsibir.ru"
+  ]},
+  { name: "Space", links: [
+    "https://space.hornburst.com",
+    "https://space.dialogsibir.ru"
+  ]},
+  { name: "Triple T HD", links: [
+    "https://triplethd.mysaol.com",
+    "https://triplethd.hornburst.com",
+    "https://triplethd.dialogsibir.ru"
+  ]},
+  { name: "Utopia", links: [
+    "https://utopia.hornburst.com",
+    "https://utopia.dialogsibir.ru"
+  ]},
+  { name: "Study Hub", links: [
+    "https://studyhub.mysaol.com",
+    "https://studyhub.hornburst.com",
+    "https://stroberrii.dialogsibir.ru",
+    "https://dt7z8lnu7fv0r.cloudfront.net/",
+    "https://d12whv3rc86mrm.cloudfront.net"
+  ]},
+  { name: "Lunar", links: [
+    "https://lunar.mysaol.com",
+    "https://lunar.hornburst.com",
+    "https://lunar.dialogsibir.ru"
+  ]},
+  { name: "Tungtung", links: [
+    "https://tungtung.hornburst.com",
+    "https://tungtung.dialogsibir.ru"
+  ]}
+];
+
+// ─── MERGE ────────────────────────────────────────────────
+function mergeProxies(fbData) {
+  const merged = JSON.parse(JSON.stringify(fallbackProxies));
+  if (!fbData) return merged;
+  for (const [key, p] of Object.entries(fbData)) {
+    if (!p.name || !p.links) continue;
+    const links = Array.isArray(p.links) ? [...p.links] : Object.values(p.links);
+    if (links.length === 0) continue;
+    const existing = merged.find(m => m.name.toLowerCase() === p.name.toLowerCase());
+    if (existing) {
+      const newLinks = links.filter(l => !existing.links.includes(l));
+      existing.links = [...existing.links, ...newLinks];
+    } else {
+      merged.push({ name: p.name, links });
+    }
+  }
+  return merged;
+}
+
+// ─── REFRESH ──────────────────────────────────────────────
+async function refreshProxies() {
+  try {
+    const snap = await get(ref(db, 'proxies'));
+    renderProxies(mergeProxies(snap.val()));
+  } catch (e) {
+    renderProxies(fallbackProxies);
+  }
+}
+
+// ─── RENDER LIST ──────────────────────────────────────────
+function renderProxies(proxies) {
+  allProxies = proxies;
+  const grid = document.getElementById('proxyGrid');
+  document.getElementById('proxyCount').textContent = proxies.length + ' Proxies';
+  const search = document.getElementById('searchBar').value.toLowerCase();
+  const filtered = search ? proxies.filter(p => p.name.toLowerCase().includes(search)) : proxies;
+
+  grid.innerHTML = filtered.map((p, i) => {
+    const realIdx = proxies.indexOf(p);
+    return `
+    <div class="proxy-tile" onclick="openDetail(${realIdx})">
+      <span class="tile-arrow">→</span>
+      <div class="tile-name"><span class="dot"></span>${p.name}</div>
+      <div class="tile-count">${p.links.length} link${p.links.length !== 1 ? 's' : ''}</div>
+    </div>`;
+  }).join('');
+}
+
+window.filterProxies = function() { renderProxies(allProxies); };
+
+// ─── DETAIL PAGE ──────────────────────────────────────────
+window.openDetail = function(i) {
+  currentDetailIdx = i;
+  const p = allProxies[i];
+  document.getElementById('listPage').classList.add('hidden');
+  document.getElementById('detailPage').classList.add('active');
+  document.getElementById('detailHeader').innerHTML = `
+    <h2>${p.name}</h2>
+    <div class="detail-meta">${p.links.length} links</div>
+    <div class="detail-actions">
+      <button onclick="checkAllLinks(${i})">🔍 Check All</button>
+      ${currentRole === 'admin' || currentRole === 'owner' ? `<button onclick="toggleEditDetail(${i})">✏️ Edit</button><button onclick="deleteProxy(${i})">🗑 Delete</button>` : ''}
+    </div>
+    <div id="detail-edit-area" style="display:none;margin-top:1rem;"></div>
+  `;
+  renderLinksList(p, i);
+  window.scrollTo(0, 0);
+};
+
+function renderLinksList(p, i) {
+  const list = document.getElementById('linksList');
+  list.innerHTML = p.links.map((l, li) => `
+    <div class="link-item">
+      <span class="link-status" id="ls-${i}-${li}"></span>
+      <a href="${l}" target="_blank" rel="noopener">${l}</a>
+      <button class="copy-btn" onclick="copyLink(this, '${l}')">Copy</button>
+    </div>
+  `).join('');
+}
+
+window.goBack = function() {
+  document.getElementById('detailPage').classList.remove('active');
+  document.getElementById('listPage').classList.remove('hidden');
+  currentDetailIdx = -1;
+};
+
+window.copyLink = function(btn, url) {
+  navigator.clipboard.writeText(url).then(() => {
+    btn.textContent = '✓';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
+  });
+};
+
+// ─── LINK CHECKER ─────────────────────────────────────────
+window.checkAllLinks = async function(proxyIdx) {
+  const proxy = allProxies[proxyIdx];
+  if (!proxy) return;
+  for (let i = 0; i < proxy.links.length; i++) {
+    const dot = document.getElementById(`ls-${proxyIdx}-${i}`);
+    if (dot) dot.className = 'link-status checking';
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000);
+      await fetch(proxy.links[i], { mode: 'no-cors', signal: controller.signal });
+      clearTimeout(timeout);
+      if (dot) dot.className = 'link-status online';
+    } catch (e) {
+      if (dot) dot.className = 'link-status offline';
+    }
+  }
+};
+
+// ─── EDIT (on detail page) ────────────────────────────────
+window.toggleEditDetail = function(i) {
+  const area = document.getElementById('detail-edit-area');
+  if (area.style.display === 'none') {
+    const p = allProxies[i];
+    area.innerHTML = `
+      <input type="text" id="edit-name-${i}" value="${p.name}" placeholder="Proxy name" style="width:100%;padding:0.5rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);margin-bottom:0.5rem;">
+      <div id="edit-links-${i}" style="display:flex;flex-direction:column;gap:0.3rem;margin-bottom:0.5rem;">
+        ${p.links.slice(0, 20).map((l, li) => `<div style="display:flex;gap:0.3rem;"><input type="text" value="${l}" style="flex:1;padding:0.4rem;background:var(--surface);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:0.8rem;"><button onclick="this.parentElement.remove()" style="padding:0.3rem 0.5rem;border-radius:4px;border:none;background:var(--red);color:#000;cursor:pointer;">✕</button></div>`).join('')}
+        ${p.links.length > 20 ? `<p style="font-size:0.7rem;color:var(--muted);">Showing first 20 of ${p.links.length}. Use Firebase console to edit the rest.</p>` : ''}
+      </div>
+      <button onclick="addEditLinkDetail(${i})" style="padding:0.3rem 0.8rem;border-radius:4px;border:1px dashed var(--border);background:none;color:var(--muted);font-size:0.75rem;cursor:pointer;margin-bottom:0.5rem;">+ Add Link</button>
+      <button onclick="saveEditDetail(${i})" style="padding:0.4rem 1rem;border-radius:6px;background:var(--accent);border:none;color:#fff;font-weight:600;font-size:0.8rem;cursor:pointer;">Save</button>
+      <button onclick="document.getElementById('detail-edit-area').style.display='none'" style="padding:0.4rem 1rem;border-radius:6px;background:var(--surface);border:1px solid var(--border);color:var(--muted);font-size:0.8rem;cursor:pointer;margin-left:0.4rem;">Cancel</button>
+    `;
+    area.style.display = 'block';
+  } else {
+    area.style.display = 'none';
+  }
+};
+
+window.addEditLinkDetail = function(i) {
+  const container = document.getElementById(`edit-links-${i}`);
+  const row = document.createElement('div');
+  row.style.cssText = 'display:flex;gap:0.3rem;';
+  row.innerHTML = `<input type="text" placeholder="https://..." style="flex:1;padding:0.4rem;background:var(--surface);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:0.8rem;"><button onclick="this.parentElement.remove()" style="padding:0.3rem 0.5rem;border-radius:4px;border:none;background:var(--red);color:#000;cursor:pointer;">✕</button>`;
+  container.appendChild(row);
+};
+
+window.saveEditDetail = async function(i) {
+  const p = allProxies[i];
+  const newName = document.getElementById(`edit-name-${i}`).value.trim();
+  const inputs = document.querySelectorAll(`#edit-links-${i} input`);
+  const newLinks = [...inputs].map(inp => inp.value.trim()).filter(l => l);
+  if (!newName || newLinks.length === 0) { alert('Name and at least one link required.'); return; }
+  try {
+    const fbSnap = await get(ref(db, 'proxies'));
+    const fbData = fbSnap.val() || {};
+    const fbKey = Object.keys(fbData).find(k => fbData[k].name && fbData[k].name.toLowerCase() === p.name.toLowerCase());
+    if (fbKey) {
+      await update(ref(db, `proxies/${fbKey}`), { name: newName, links: newLinks });
+    } else {
+      const newKey = push(ref(db, 'proxies')).key;
+      await set(ref(db, `proxies/${newKey}`), { name: newName, links: newLinks });
+    }
+    document.getElementById('detail-edit-area').style.display = 'none';
+    await refreshProxies();
+  } catch (e) { alert('Error: ' + e.message); }
+};
+
+window.deleteProxy = async function(i) {
+  if (!confirm(`Delete proxy "${allProxies[i].name}"?`)) return;
+  try {
+    const fbSnap = await get(ref(db, 'proxies'));
+    const fbData = fbSnap.val() || {};
+    const fbKey = Object.keys(fbData).find(k => fbData[k].name && fbData[k].name.toLowerCase() === allProxies[i].name.toLowerCase());
+    if (fbKey) await remove(ref(db, `proxies/${fbKey}`));
+    await refreshProxies();
+    goBack();
+  } catch (e) { alert(e.message); }
+};
+
+// ─── AUTH ─────────────────────────────────────────────────
+window.toggleAuth = function(mode) {
+  document.getElementById('loginBox').style.display = mode === 'login' ? 'block' : 'none';
+  document.getElementById('registerBox').style.display = mode === 'register' ? 'block' : 'none';
+};
+
+window.doLogin = async function() {
+  try {
+    await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPass').value);
+  } catch (e) {
+    document.getElementById('loginError').textContent = e.message;
+    document.getElementById('loginError').style.display = 'block';
+  }
+};
+
+window.doRegister = async function() {
+  const username = document.getElementById('regUsername').value.trim();
+  const email = document.getElementById('regEmail').value;
+  const pass = document.getElementById('regPass').value;
+  if (!username || !email || !pass) return;
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+    await set(ref(db, `users/${cred.user.uid}`), { username, role: "user", banned: false, createdAt: Date.now() });
+  } catch (e) {
+    document.getElementById('regError').textContent = e.message;
+    document.getElementById('regError').style.display = 'block';
+  }
+};
+
+onAuthStateChanged(auth, (user) => {
+  // Tear down old listeners
+  if (proxiesListener) { proxiesListener(); proxiesListener = null; }
+  if (chatListener) { chatListener(); chatListener = null; }
+
+  if (user) {
+    currentUser = user;
+    onValue(ref(db, `users/${user.uid}`), (snap) => {
+      const data = snap.val();
+      if (data) {
+        currentRole = data.role || "user";
+        currentUsername = data.username || "User";
+        updateUI();
+      }
+    });
+    // Re-register proxies listener
+    proxiesListener = onValue(ref(db, 'proxies'), (snap) => {
+      renderProxies(mergeProxies(snap.val()));
+    });
+    refreshProxies();
+    // Re-register chat listener (FIXES: chat not updating without reload)
+    chatListener = onValue(ref(db, 'chat'), (snap) => {
+      renderChat(snap.val());
+    });
+    console.log("Your UID:", user.uid);
+  } else {
+    currentUser = null; currentRole = null; currentUsername = null;
+    updateUI();
+    renderProxies(fallbackProxies);
+    // Chat still listens (will get null until auth)
+    chatListener = onValue(ref(db, 'chat'), (snap) => { renderChat(snap.val()); });
+  }
+});
+
+function updateUI() {
+  const badge = document.getElementById('userBadge');
+  const navAuth = document.getElementById('navAuth');
+  const navAdmin = document.getElementById('navAdmin');
+  if (currentUser) {
+    const roleColors = { user: 'var(--muted)', helper: 'var(--accent)', admin: 'var(--yellow)', owner: 'var(--red)' };
+    badge.innerHTML = `<span class="user-badge"><span>${currentUsername}</span><span class="role" style="color:${roleColors[currentRole]||'var(--muted)'}">${currentRole}</span></span>`;
+    navAuth.textContent = 'Sign Out';
+    navAuth.onclick = () => signOut(auth);
+    navAdmin.style.display = (currentRole === 'admin' || currentRole === 'owner') ? 'block' : 'none';
+    document.getElementById('ownerPanel').style.display = currentRole === 'owner' ? 'block' : 'none';
+    document.getElementById('banPanel').style.display = (currentRole === 'admin' || currentRole === 'owner') ? 'block' : 'none';
+  } else {
+    badge.innerHTML = '';
+    navAuth.textContent = 'Sign In';
+    navAuth.onclick = () => showSection('auth');
+    navAdmin.style.display = 'none';
+  }
+}
+
+// ─── CHAT ─────────────────────────────────────────────────
+function renderChat(data) {
+  const container = document.getElementById('chatMessages');
+  if (!data) { container.innerHTML = ''; return; }
+  const msgs = Object.entries(data).sort((a,b) => (a[1].timestamp||0) - (b[1].timestamp||0));
+  container.innerHTML = msgs.map(([id, m]) => {
+    const roleTag = m.role && m.role !== 'user' ? `<span class="msg-role ${m.role}">${m.role}</span>` : '';
+    return `<div class="chat-msg"><span class="msg-user">${m.username}</span>${roleTag} ${m.text}</div>`;
+  }).join('');
+  container.scrollTop = container.scrollHeight;
+}
+
+window.sendChat = function() {
+  if (!currentUser) { showSection('auth'); return; }
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+  push(ref(db, 'chat'), { uid: currentUser.uid, username: currentUsername, role: currentRole, text, timestamp: Date.now() });
+  input.value = '';
+};
+
+// ─── SUGGESTIONS ──────────────────────────────────────────
+window.openModal = function() {
+  if (!currentUser) { showSection('auth'); return; }
+  document.getElementById('suggestModal').classList.add('show');
+};
+window.closeModal = function() { document.getElementById('suggestModal').classList.remove('show'); };
+
+window.submitSuggestion = async function() {
+  const name = document.getElementById('suggestName').value.trim();
+  const link = document.getElementById('suggestLink').value.trim();
+  if (!name || !link) return;
+  try {
+    await push(ref(db, 'suggestions'), { name, link, submittedBy: currentUser.uid, submittedByName: currentUsername, status: "pending", timestamp: Date.now() });
+    document.getElementById('suggestName').value = '';
+    document.getElementById('suggestLink').value = '';
+    closeModal();
+    alert('Suggestion submitted!');
+  } catch (e) { alert('Error: ' + e.message); }
+};
+
+onValue(ref(db, 'suggestions'), (snap) => {
+  if (currentRole !== 'admin' && currentRole !== 'owner') return;
+  const data = snap.val();
+  const list = document.getElementById('suggestionsList');
+  if (!data) { list.innerHTML = '<p style="color:var(--muted);font-size:0.85rem;">No pending suggestions.</p>'; return; }
+  const pending = Object.entries(data).filter(([id, s]) => s.status === 'pending');
+  if (pending.length === 0) { list.innerHTML = '<p style="color:var(--muted);font-size:0.85rem;">No pending suggestions.</p>'; return; }
+  list.innerHTML = pending.map(([id, s]) => `
+    <div class="suggestion-item">
+      <div class="s-top">
+        <span class="s-name">${s.name}</span>
+        <div class="s-actions">
+          <button class="approve" onclick="approveSuggestion('${id}')">✓ Approve</button>
+          <button class="reject" onclick="rejectSuggestion('${id}')">✗ Reject</button>
+        </div>
+      </div>
+      <a class="s-link" href="${s.link}" target="_blank" rel="noopener">${s.link}</a>
+      <div class="s-meta">by ${s.submittedByName || 'unknown'}</div>
+    </div>
+  `).join('');
+});
+
+window.approveSuggestion = async function(id) {
+  try {
+    const sRef = ref(db, `suggestions/${id}`);
+    const snap = await get(sRef);
+    const s = snap.val();
+    if (!s) return;
+    const proxiesSnap = await get(ref(db, 'proxies'));
+    const proxiesData = proxiesSnap.val() || {};
+    const fbKey = Object.keys(proxiesData).find(k => proxiesData[k].name && proxiesData[k].name.toLowerCase() === s.name.toLowerCase());
+    if (fbKey) {
+      const existing = proxiesData[fbKey];
+      const currentLinks = Array.isArray(existing.links) ? [...existing.links] : Object.values(existing.links || {});
+      if (!currentLinks.includes(s.link)) currentLinks.push(s.link);
+      await update(ref(db, `proxies/${fbKey}`), { links: currentLinks });
+    } else {
+      const newKey = push(ref(db, 'proxies')).key;
+      await set(ref(db, `proxies/${newKey}`), { name: s.name, links: [s.link], addedBy: currentUser.uid });
+    }
+    await update(sRef, { status: "approved" });
+    const roleSnap = await get(ref(db, `users/${s.submittedBy}/role`));
+    if (roleSnap.val() === 'user' || roleSnap.val() === null) await update(ref(db, `users/${s.submittedBy}/role`), 'helper');
+    await refreshProxies();
+  } catch (e) { alert('Error: ' + e.message); }
+};
+
+window.rejectSuggestion = async function(id) {
+  try { await update(ref(db, `suggestions/${id}`), { status: "rejected" }); } catch (e) { alert(e.message); }
+};
+
+// ─── ADMIN ────────────────────────────────────────────────
+window.banUser = async function() {
+  const uid = document.getElementById('banUid').value.trim();
+  if (!uid) return;
+  try { await update(ref(db, `users/${uid}/banned`), true); document.getElementById('banUid').value = ''; alert('Banned.'); } catch (e) { alert(e.message); }
+};
+window.makeAdmin = async function() {
+  const uid = document.getElementById('adminUid').value.trim();
+  if (!uid) return;
+  try { await update(ref(db, `users/${uid}/role`), 'admin'); document.getElementById('adminUid').value = ''; } catch (e) { alert(e.message); }
+};
+window.removeAdmin = async function() {
+  const uid = document.getElementById('adminUid').value.trim();
+  if (!uid) return;
+  try { await update(ref(db, `users/${uid}/role`), 'user'); document.getElementById('adminUid').value = ''; } catch (e) { alert(e.message); }
+};
+
+// ─── NAV ──────────────────────────────────────────────────
+window.showSection = function(id) {
+  // Go back to list if on detail page
+  if (id === 'proxies') goBack();
+  ['proxies','chat','admin','auth'].forEach(s => {
+    const el = document.getElementById(`section-${s}`);
+    if (el) el.style.display = s === id ? 'block' : 'none';
+  });
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  if (event && event.target) event.target.classList.add('active');
+};
+
+// ─── INIT ─────────────────────────────────────────────────
+renderProxies(fallbackProxies);
+document.getElementById('suggestModal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+</script>
+</body>
+</html>   
