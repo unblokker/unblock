@@ -6,116 +6,53 @@
 <title>unblokked</title>
 <style>
 :root {
-  --bg: #0a0a0f;
-  --surface: #12121a;
-  --card: #1a1a26;
-  --card-hover: #22223a;
-  --border: #2a2a3e;
-  --text: #e8e8f0;
-  --muted: #7878a0;
-  --accent: #7c5cfc;
-  --accent-hover: #9b7fff;
-  --accent-dim: rgba(124,92,252,0.15);
-  --green: #4ade80;
-  --yellow: #facc15;
-  --red: #f87171;
-  --radius: 10px;
+  --bg: #0a0a0f; --surface: #12121a; --card: #1a1a26; --card-hover: #22223a;
+  --border: #2a2a3e; --text: #e8e8f0; --muted: #7878a0; --accent: #7c5cfc;
+  --accent-hover: #9b7fff; --accent-dim: rgba(124,92,252,0.15);
+  --green: #4ade80; --yellow: #facc15; --red: #f87171; --radius: 10px;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: var(--bg); color: var(--text); line-height: 1.5; min-height: 100vh;
-}
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; min-height: 100vh; }
 .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.25rem; }
-
 header { text-align: center; padding: 2rem 0 1.5rem; }
-header h1 {
-  font-size: 2.8rem; font-weight: 800;
-  background: linear-gradient(135deg, var(--accent), #c084fc);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-}
+header h1 { font-size: 2.8rem; font-weight: 800; background: linear-gradient(135deg, var(--accent), #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 header p { color: var(--muted); margin-top: 0.4rem; font-size: 1rem; }
-
 nav { display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
-nav button {
-  padding: 0.5rem 1.2rem; border-radius: 99px;
-  border: 1px solid var(--border); background: var(--surface);
-  color: var(--muted); font-size: 0.85rem; cursor: pointer; transition: all 0.2s; font-weight: 500;
-}
+nav button { padding: 0.5rem 1.2rem; border-radius: 99px; border: 1px solid var(--border); background: var(--surface); color: var(--muted); font-size: 0.85rem; cursor: pointer; transition: all 0.2s; font-weight: 500; }
 nav button:hover, nav button.active { background: var(--accent-dim); border-color: var(--accent); color: var(--text); }
-
-/* SEARCH */
-.search-bar {
-  width: 100%; max-width: 400px; margin: 0 auto 1.5rem;
-  padding: 0.6rem 1rem; background: var(--surface);
-  border: 1px solid var(--border); border-radius: 8px;
-  color: var(--text); font-size: 0.9rem;
-}
+.search-bar { width: 100%; max-width: 400px; margin: 0 auto 1.5rem; padding: 0.6rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.9rem; }
 .search-bar:focus { outline: none; border-color: var(--accent); }
-
-/* PROXY GRID */
-.proxy-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 0.75rem; margin-bottom: 2rem;
-}
-.proxy-tile {
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 1.25rem 1rem;
-  cursor: pointer; transition: all 0.2s; position: relative;
-}
+.proxy-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.75rem; margin-bottom: 2rem; }
+.proxy-tile { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem 1rem; cursor: pointer; transition: all 0.2s; position: relative; }
 .proxy-tile:hover { background: var(--card-hover); border-color: var(--accent); transform: translateY(-2px); }
 .proxy-tile .tile-name { font-weight: 700; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; }
 .proxy-tile .tile-name .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
 .proxy-tile .tile-count { font-size: 0.75rem; color: var(--muted); margin-top: 0.3rem; }
 .proxy-tile .tile-arrow { position: absolute; top: 1.25rem; right: 1rem; font-size: 0.8rem; color: var(--muted); }
-
-/* DETAIL PAGE */
 .detail-page { display: none; }
 .detail-page.active { display: block; }
 .list-page.hidden { display: none; }
-.back-btn {
-  display: inline-flex; align-items: center; gap: 0.4rem;
-  padding: 0.5rem 1rem; border-radius: 8px;
-  background: var(--surface); border: 1px solid var(--border);
-  color: var(--text); font-size: 0.85rem; cursor: pointer; margin-bottom: 1.5rem;
-}
+.back-btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; border-radius: 8px; background: var(--surface); border: 1px solid var(--border); color: var(--text); font-size: 0.85rem; cursor: pointer; margin-bottom: 1.5rem; }
 .back-btn:hover { border-color: var(--accent); }
 .detail-header { margin-bottom: 1.5rem; }
 .detail-header h2 { font-size: 1.6rem; font-weight: 800; margin-bottom: 0.3rem; }
 .detail-header .detail-meta { color: var(--muted); font-size: 0.85rem; }
-.detail-header .detail-actions { display: flex; gap: 0.5rem; margin-top: 0.75rem; }
-.detail-header .detail-actions button {
-  padding: 0.4rem 0.9rem; border-radius: 6px; border: 1px solid var(--border);
-  background: var(--surface); color: var(--muted); font-size: 0.8rem; cursor: pointer;
-}
+.detail-header .detail-actions { display: flex; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap; }
+.detail-header .detail-actions button { padding: 0.4rem 0.9rem; border-radius: 6px; border: 1px solid var(--border); background: var(--surface); color: var(--muted); font-size: 0.8rem; cursor: pointer; }
 .detail-header .detail-actions button:hover { border-color: var(--accent); color: var(--text); }
-
 .links-list { display: flex; flex-direction: column; gap: 0.4rem; }
-.link-item {
-  display: flex; align-items: center; gap: 0.6rem;
-  padding: 0.6rem 0.8rem; background: var(--card);
-  border: 1px solid var(--border); border-radius: 8px;
-  font-size: 0.82rem; transition: border-color 0.15s;
-}
+.link-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.6rem 0.8rem; background: var(--card); border: 1px solid var(--border); border-radius: 8px; font-size: 0.82rem; transition: border-color 0.15s; }
 .link-item:hover { border-color: var(--accent); }
 .link-item .link-status { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
 .link-status.online { background: var(--green); }
 .link-status.offline { background: var(--red); }
 .link-status.checking { background: var(--yellow); animation: pulse 1s infinite; }
 @keyframes pulse { 50% { opacity: 0.3; } }
-.link-item a {
-  flex: 1; color: var(--text); text-decoration: none; word-break: break-all;
-}
+.link-item a { flex: 1; color: var(--text); text-decoration: none; word-break: break-all; }
 .link-item a:hover { color: var(--accent); }
-.link-item .copy-btn {
-  padding: 0.25rem 0.6rem; border-radius: 4px; border: 1px solid var(--border);
-  background: var(--surface); color: var(--muted); font-size: 0.7rem; cursor: pointer;
-  white-space: nowrap;
-}
+.link-item .copy-btn { padding: 0.25rem 0.6rem; border-radius: 4px; border: 1px solid var(--border); background: var(--surface); color: var(--muted); font-size: 0.7rem; cursor: pointer; white-space: nowrap; }
 .link-item .copy-btn:hover { border-color: var(--accent); color: var(--text); }
 .link-item .copy-btn.copied { border-color: var(--green); color: var(--green); }
-
-/* CHAT */
 .chat-box { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; margin-bottom: 1rem; }
 .chat-messages { height: 350px; overflow-y: auto; padding: 0.5rem; margin-bottom: 0.75rem; }
 .chat-msg { padding: 0.4rem 0.6rem; margin-bottom: 0.4rem; border-radius: 6px; font-size: 0.85rem; background: var(--surface); }
@@ -125,31 +62,19 @@ nav button:hover, nav button.active { background: var(--accent-dim); border-colo
 .msg-role.admin { background: rgba(251,191,36,0.15); color: var(--yellow); }
 .msg-role.owner { background: rgba(248,113,113,0.15); color: var(--red); }
 .chat-input-row { display: flex; gap: 0.5rem; }
-.chat-input-row input {
-  flex: 1; padding: 0.6rem 0.8rem;
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 6px; color: var(--text); font-size: 0.9rem;
-}
+.chat-input-row input { flex: 1; padding: 0.6rem 0.8rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 0.9rem; }
 .chat-input-row input:focus { outline: none; border-color: var(--accent); }
 .chat-input-row button { padding: 0.6rem 1.2rem; border-radius: 6px; background: var(--accent); border: none; color: #fff; font-weight: 600; cursor: pointer; }
-
-/* AUTH */
 .auth-box { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; max-width: 400px; margin: 0 auto; }
 .auth-box h3 { margin-bottom: 1rem; font-size: 1.1rem; }
 .auth-box label { font-size: 0.8rem; color: var(--muted); display: block; margin-bottom: 0.3rem; }
-.auth-box input {
-  width: 100%; padding: 0.6rem 0.8rem; margin-bottom: 1rem;
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 6px; color: var(--text); font-size: 0.9rem;
-}
+.auth-box input { width: 100%; padding: 0.6rem 0.8rem; margin-bottom: 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 0.9rem; }
 .auth-box input:focus { outline: none; border-color: var(--accent); }
 .auth-box .btn { width: 100%; padding: 0.6rem; border-radius: 6px; background: var(--accent); border: none; color: #fff; font-weight: 600; cursor: pointer; font-size: 0.9rem; }
 .auth-box .btn:hover { background: var(--accent-hover); }
 .auth-box .switch-link { text-align: center; margin-top: 1rem; font-size: 0.8rem; color: var(--muted); }
 .auth-box .switch-link a { color: var(--accent); cursor: pointer; text-decoration: none; }
 .auth-error { color: var(--red); font-size: 0.8rem; margin-bottom: 0.5rem; display: none; }
-
-/* MODAL */
 .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; }
 .modal-overlay.show { display: flex; }
 .modal { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; width: 90%; max-width: 400px; }
@@ -161,17 +86,8 @@ nav button:hover, nav button.active { background: var(--accent-dim); border-colo
 .modal .btn { flex: 1; padding: 0.6rem; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; font-size: 0.85rem; }
 .modal .btn-primary { background: var(--accent); color: #fff; }
 .modal .btn-secondary { background: var(--surface); color: var(--muted); border: 1px solid var(--border); }
-
-.suggest-btn {
-  position: fixed; bottom: 1.5rem; right: 1.5rem;
-  width: 52px; height: 52px; border-radius: 50%;
-  background: var(--accent); border: none; color: #fff; font-size: 1.5rem; cursor: pointer;
-  box-shadow: 0 4px 20px rgba(124,92,252,0.4); transition: transform 0.2s;
-  display: flex; align-items: center; justify-content: center; z-index: 100;
-}
+.suggest-btn { position: fixed; bottom: 1.5rem; right: 1.5rem; width: 52px; height: 52px; border-radius: 50%; background: var(--accent); border: none; color: #fff; font-size: 1.5rem; cursor: pointer; box-shadow: 0 4px 20px rgba(124,92,252,0.4); transition: transform 0.2s; display: flex; align-items: center; justify-content: center; z-index: 100; }
 .suggest-btn:hover { transform: scale(1.1); }
-
-/* ADMIN */
 .admin-panel { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1rem; }
 .admin-panel h3 { margin-bottom: 1rem; font-size: 1rem; }
 .suggestion-item { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem; margin-bottom: 0.5rem; font-size: 0.85rem; }
@@ -184,20 +100,12 @@ nav button:hover, nav button.active { background: var(--accent-dim); border-colo
 .suggestion-item .s-link { color: var(--accent); font-size: 0.8rem; word-break: break-all; text-decoration: none; display: block; margin-bottom: 0.3rem; }
 .suggestion-item .s-link:hover { text-decoration: underline; }
 .suggestion-item .s-meta { font-size: 0.7rem; color: var(--muted); }
-
 .user-badge { display: inline-flex; align-items: center; gap: 0.4rem; background: var(--surface); border: 1px solid var(--border); border-radius: 99px; padding: 0.3rem 0.8rem; font-size: 0.8rem; margin-top: 0.5rem; }
 .user-badge .role { font-weight: 700; font-size: 0.7rem; }
-
 .section-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
 .badge { font-size: 0.65rem; padding: 0.15rem 0.5rem; border-radius: 99px; background: var(--accent); color: #fff; font-weight: 600; text-transform: uppercase; }
-
 footer { text-align: center; padding: 2rem 0; color: var(--muted); font-size: 0.8rem; border-top: 1px solid var(--border); margin-top: 2rem; }
-
-@media (max-width: 600px) {
-  header h1 { font-size: 2rem; }
-  .proxy-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
-  .container { padding: 1rem; }
-}
+@media (max-width: 600px) { header h1 { font-size: 2rem; } .proxy-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); } .container { padding: 1rem; } }
 </style>
 </head>
 <body>
@@ -216,14 +124,12 @@ footer { text-align: center; padding: 2rem 0; color: var(--muted); font-size: 0.
   <button id="navAuth" onclick="showSection('auth')">Sign In</button>
 </nav>
 
-<!-- LIST PAGE -->
 <div id="section-proxies">
   <div class="list-page" id="listPage">
     <input type="text" class="search-bar" id="searchBar" placeholder="🔍 Search proxies..." oninput="filterProxies()">
     <div class="section-title">Stealth Proxies <span class="badge" id="proxyCount">0</span></div>
     <div class="proxy-grid" id="proxyGrid"></div>
   </div>
-  <!-- DETAIL PAGE -->
   <div class="detail-page" id="detailPage">
     <button class="back-btn" onclick="goBack()">← Back to all proxies</button>
     <div class="detail-header" id="detailHeader"></div>
@@ -328,7 +234,8 @@ const auth = getAuth(app);
 const db = getDatabase(app);
 
 let currentUser = null, currentRole = null, currentUsername = null;
-let allProxies = [], proxiesListener = null, chatListener = null;
+let allProxies = [];
+let proxiesListener = null, chatListener = null, suggestionsListener = null;
 let currentDetailIdx = -1;
 
 // ─── PROXY DATA ───────────────────────────────────────────
@@ -379,10 +286,6 @@ const fallbackProxies = [
     "https://page-jail1.naughtybaptistbrewery.co/",
     "https://loft-kept8.naughtybaptistbrewery.com/",
     "https://loaf-tiny8.naughtybaptistbrewery.com/",
-    "https://cope7.chompchomp.ca/",
-    "https://germ-foil1.chompchomp.ca/",
-    "https://side-fins4.chompchomp.ca/",
-    "https://tens4.chompchomp.ca/",
     "https://kits7.mesaayuda.net/",
     "https://hang1.manetti.cl/",
     "https://idle-head1.ramos90.ca/",
@@ -447,93 +350,46 @@ const fallbackProxies = [
     "https://interstellarofficial.gq"
   ]},
   { name: "Doge Unblocker V5", links: [
-    "https://doge-pr0xy.de",
-    "https://doge.cx",
-    "https://proxy.doge.energy",
-    "https://doge.cf",
-    "https://doge.avanthay.me",
-    "https://proxy.pigeon.lol",
-    "https://unblock.cat",
-    "https://doge.quinn.is",
-    "https://doge.unblocker.rip",
-    "https://doge.re",
-    "https://dogenetwork.uk.ms/",
-    "https://dogenetwork.ftp.sh/"
+    "https://doge-pr0xy.de", "https://doge.cx", "https://proxy.doge.energy",
+    "https://doge.cf", "https://doge.avanthay.me", "https://proxy.pigeon.lol",
+    "https://unblock.cat", "https://doge.quinn.is", "https://doge.unblocker.rip",
+    "https://doge.re", "https://dogenetwork.uk.ms/", "https://dogenetwork.ftp.sh/"
   ]},
   { name: "CroxyProxy", links: [
-    "https://www.croxyproxy.com/",
-    "https://www.croxyproxy.net/",
-    "https://www.croxyproxy.rocks/",
-    "https://cdn.croxyproxy.com/",
-    "https://cdn.croxyproxy.net/",
-    "https://cdn.croxyproxy.rocks/",
-    "https://www.croxy.org/"
+    "https://www.croxyproxy.com/", "https://www.croxyproxy.net/",
+    "https://www.croxyproxy.rocks/", "https://cdn.croxyproxy.com/",
+    "https://cdn.croxyproxy.net/", "https://cdn.croxyproxy.rocks/", "https://www.croxy.org/"
   ]},
   { name: "BlockAway", links: [
-    "https://www.blockaway.net/",
-    "https://cdn.blockaway.net/",
-    "https://www.youtubeunblocked.live/",
-    "https://cdn.youtubeunblocked.live/"
+    "https://www.blockaway.net/", "https://cdn.blockaway.net/",
+    "https://www.youtubeunblocked.live/", "https://cdn.youtubeunblocked.live/"
   ]},
   { name: "Petezah", links: [
-    "https://petezahgames.com",
-    "https://d3tecwpbnz01jy.cloudfront.net",
+    "https://petezahgames.com", "https://d3tecwpbnz01jy.cloudfront.net",
     "https://accounting.tutoringservices.site.cdn.cloudflare.net",
-    "https://sage.task.susanbaerg.com",
-    "https://data.think.infoudec.org",
-    "https://science.jobvn.com",
-    "https://math.zearn.1copa.com",
-    "https://petezah.pages.dev"
+    "https://sage.task.susanbaerg.com", "https://data.think.infoudec.org",
+    "https://science.jobvn.com", "https://math.zearn.1copa.com", "https://petezah.pages.dev"
   ]},
   { name: "Rosin", links: [
-    "https://ideas.orchid-idea.com/",
-    "https://sosa.centromariapolis.cl/",
+    "https://ideas.orchid-idea.com/", "https://sosa.centromariapolis.cl/",
     "https://followmytiktok.centromariapolis.cl/",
     "https://wegondoubleback.gyalsanglama.com.np/",
-    "https://weup.casadotricolor.com.br/",
-    "https://studioexpresstt.com/",
-    "https://4to.pics/"
+    "https://weup.casadotricolor.com.br/", "https://studioexpresstt.com/", "https://4to.pics/"
   ]},
   { name: "Galaxy V7", links: [
-    "https://glxy.b-cdn.net/",
-    "https://hope.onlyforskolarship.online/",
-    "https://k-12.kwgranitecountertops.com/",
-    "https://math-tutoring.streetdirectory.sg/"
+    "https://glxy.b-cdn.net/", "https://hope.onlyforskolarship.online/",
+    "https://k-12.kwgranitecountertops.com/", "https://math-tutoring.streetdirectory.sg/"
   ]},
-  { name: "Solara", links: [
-    "https://solara.mysaol.com",
-    "https://solara.hornburst.com",
-    "https://solara.dialogsibir.ru"
-  ]},
-  { name: "Space", links: [
-    "https://space.hornburst.com",
-    "https://space.dialogsibir.ru"
-  ]},
-  { name: "Triple T HD", links: [
-    "https://triplethd.mysaol.com",
-    "https://triplethd.hornburst.com",
-    "https://triplethd.dialogsibir.ru"
-  ]},
-  { name: "Utopia", links: [
-    "https://utopia.hornburst.com",
-    "https://utopia.dialogsibir.ru"
-  ]},
+  { name: "Solara", links: ["https://solara.mysaol.com", "https://solara.hornburst.com", "https://solara.dialogsibir.ru"] },
+  { name: "Space", links: ["https://space.hornburst.com", "https://space.dialogsibir.ru"] },
+  { name: "Triple T HD", links: ["https://triplethd.mysaol.com", "https://triplethd.hornburst.com", "https://triplethd.dialogsibir.ru"] },
+  { name: "Utopia", links: ["https://utopia.hornburst.com", "https://utopia.dialogsibir.ru"] },
   { name: "Study Hub", links: [
-    "https://studyhub.mysaol.com",
-    "https://studyhub.hornburst.com",
-    "https://stroberrii.dialogsibir.ru",
-    "https://dt7z8lnu7fv0r.cloudfront.net/",
-    "https://d12whv3rc86mrm.cloudfront.net"
+    "https://studyhub.mysaol.com", "https://studyhub.hornburst.com",
+    "https://stroberrii.dialogsibir.ru", "https://dt7z8lnu7fv0r.cloudfront.net/", "https://d12whv3rc86mrm.cloudfront.net"
   ]},
-  { name: "Lunar", links: [
-    "https://lunar.mysaol.com",
-    "https://lunar.hornburst.com",
-    "https://lunar.dialogsibir.ru"
-  ]},
-  { name: "Tungtung", links: [
-    "https://tungtung.hornburst.com",
-    "https://tungtung.dialogsibir.ru"
-  ]}
+  { name: "Lunar", links: ["https://lunar.mysaol.com", "https://lunar.hornburst.com", "https://lunar.dialogsibir.ru"] },
+  { name: "Tungtung", links: ["https://tungtung.hornburst.com", "https://tungtung.dialogsibir.ru"] }
 ];
 
 // ─── MERGE ────────────────────────────────────────────────
@@ -560,9 +416,7 @@ async function refreshProxies() {
   try {
     const snap = await get(ref(db, 'proxies'));
     renderProxies(mergeProxies(snap.val()));
-  } catch (e) {
-    renderProxies(fallbackProxies);
-  }
+  } catch (e) { renderProxies(fallbackProxies); }
 }
 
 // ─── RENDER LIST ──────────────────────────────────────────
@@ -572,11 +426,9 @@ function renderProxies(proxies) {
   document.getElementById('proxyCount').textContent = proxies.length + ' Proxies';
   const search = document.getElementById('searchBar').value.toLowerCase();
   const filtered = search ? proxies.filter(p => p.name.toLowerCase().includes(search)) : proxies;
-
-  grid.innerHTML = filtered.map((p, i) => {
+  grid.innerHTML = filtered.map((p) => {
     const realIdx = proxies.indexOf(p);
-    return `
-    <div class="proxy-tile" onclick="openDetail(${realIdx})">
+    return `<div class="proxy-tile" onclick="openDetail(${realIdx})">
       <span class="tile-arrow">→</span>
       <div class="tile-name"><span class="dot"></span>${p.name}</div>
       <div class="tile-count">${p.links.length} link${p.links.length !== 1 ? 's' : ''}</div>
@@ -606,12 +458,11 @@ window.openDetail = function(i) {
 };
 
 function renderLinksList(p, i) {
-  const list = document.getElementById('linksList');
-  list.innerHTML = p.links.map((l, li) => `
+  document.getElementById('linksList').innerHTML = p.links.map((l, li) => `
     <div class="link-item">
       <span class="link-status" id="ls-${i}-${li}"></span>
       <a href="${l}" target="_blank" rel="noopener">${l}</a>
-      <button class="copy-btn" onclick="copyLink(this, '${l}')">Copy</button>
+      <button class="copy-btn" onclick="copyLink(this, '${l.replace(/'/g, "\\'")}')">Copy</button>
     </div>
   `).join('');
 }
@@ -624,8 +475,7 @@ window.goBack = function() {
 
 window.copyLink = function(btn, url) {
   navigator.clipboard.writeText(url).then(() => {
-    btn.textContent = '✓';
-    btn.classList.add('copied');
+    btn.textContent = '✓'; btn.classList.add('copied');
     setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
   });
 };
@@ -643,13 +493,11 @@ window.checkAllLinks = async function(proxyIdx) {
       await fetch(proxy.links[i], { mode: 'no-cors', signal: controller.signal });
       clearTimeout(timeout);
       if (dot) dot.className = 'link-status online';
-    } catch (e) {
-      if (dot) dot.className = 'link-status offline';
-    }
+    } catch (e) { if (dot) dot.className = 'link-status offline'; }
   }
 };
 
-// ─── EDIT (on detail page) ────────────────────────────────
+// ─── EDIT ─────────────────────────────────────────────────
 window.toggleEditDetail = function(i) {
   const area = document.getElementById('detail-edit-area');
   if (area.style.display === 'none') {
@@ -665,9 +513,7 @@ window.toggleEditDetail = function(i) {
       <button onclick="document.getElementById('detail-edit-area').style.display='none'" style="padding:0.4rem 1rem;border-radius:6px;background:var(--surface);border:1px solid var(--border);color:var(--muted);font-size:0.8rem;cursor:pointer;margin-left:0.4rem;">Cancel</button>
     `;
     area.style.display = 'block';
-  } else {
-    area.style.display = 'none';
-  }
+  } else { area.style.display = 'none'; }
 };
 
 window.addEditLinkDetail = function(i) {
@@ -688,12 +534,8 @@ window.saveEditDetail = async function(i) {
     const fbSnap = await get(ref(db, 'proxies'));
     const fbData = fbSnap.val() || {};
     const fbKey = Object.keys(fbData).find(k => fbData[k].name && fbData[k].name.toLowerCase() === p.name.toLowerCase());
-    if (fbKey) {
-      await update(ref(db, `proxies/${fbKey}`), { name: newName, links: newLinks });
-    } else {
-      const newKey = push(ref(db, 'proxies')).key;
-      await set(ref(db, `proxies/${newKey}`), { name: newName, links: newLinks });
-    }
+    if (fbKey) { await update(ref(db, `proxies/${fbKey}`), { name: newName, links: newLinks }); }
+    else { const newKey = push(ref(db, 'proxies')).key; await set(ref(db, `proxies/${newKey}`), { name: newName, links: newLinks }); }
     document.getElementById('detail-edit-area').style.display = 'none';
     await refreshProxies();
   } catch (e) { alert('Error: ' + e.message); }
@@ -706,8 +548,7 @@ window.deleteProxy = async function(i) {
     const fbData = fbSnap.val() || {};
     const fbKey = Object.keys(fbData).find(k => fbData[k].name && fbData[k].name.toLowerCase() === allProxies[i].name.toLowerCase());
     if (fbKey) await remove(ref(db, `proxies/${fbKey}`));
-    await refreshProxies();
-    goBack();
+    await refreshProxies(); goBack();
   } catch (e) { alert(e.message); }
 };
 
@@ -718,12 +559,8 @@ window.toggleAuth = function(mode) {
 };
 
 window.doLogin = async function() {
-  try {
-    await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPass').value);
-  } catch (e) {
-    document.getElementById('loginError').textContent = e.message;
-    document.getElementById('loginError').style.display = 'block';
-  }
+  try { await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPass').value); }
+  catch (e) { document.getElementById('loginError').textContent = e.message; document.getElementById('loginError').style.display = 'block'; }
 };
 
 window.doRegister = async function() {
@@ -734,16 +571,13 @@ window.doRegister = async function() {
   try {
     const cred = await createUserWithEmailAndPassword(auth, email, pass);
     await set(ref(db, `users/${cred.user.uid}`), { username, role: "user", banned: false, createdAt: Date.now() });
-  } catch (e) {
-    document.getElementById('regError').textContent = e.message;
-    document.getElementById('regError').style.display = 'block';
-  }
+  } catch (e) { document.getElementById('regError').textContent = e.message; document.getElementById('regError').style.display = 'block'; }
 };
 
 onAuthStateChanged(auth, (user) => {
-  // Tear down old listeners
   if (proxiesListener) { proxiesListener(); proxiesListener = null; }
   if (chatListener) { chatListener(); chatListener = null; }
+  if (suggestionsListener) { suggestionsListener(); suggestionsListener = null; }
 
   if (user) {
     currentUser = user;
@@ -753,23 +587,20 @@ onAuthStateChanged(auth, (user) => {
         currentRole = data.role || "user";
         currentUsername = data.username || "User";
         updateUI();
+        // Re-render suggestions now that role is known
+        if (suggestionsListener) suggestionsListener();
+        suggestionsListener = onValue(ref(db, 'suggestions'), (snap2) => { renderSuggestions(snap2.val()); });
+        refreshProxies();
       }
     });
-    // Re-register proxies listener
-    proxiesListener = onValue(ref(db, 'proxies'), (snap) => {
-      renderProxies(mergeProxies(snap.val()));
-    });
-    refreshProxies();
-    // Re-register chat listener (FIXES: chat not updating without reload)
-    chatListener = onValue(ref(db, 'chat'), (snap) => {
-      renderChat(snap.val());
-    });
+    proxiesListener = onValue(ref(db, 'proxies'), (snap) => { renderProxies(mergeProxies(snap.val())); });
+    chatListener = onValue(ref(db, 'chat'), (snap) => { renderChat(snap.val()); });
+    suggestionsListener = onValue(ref(db, 'suggestions'), (snap) => { renderSuggestions(snap.val()); });
     console.log("Your UID:", user.uid);
   } else {
     currentUser = null; currentRole = null; currentUsername = null;
     updateUI();
     renderProxies(fallbackProxies);
-    // Chat still listens (will get null until auth)
     chatListener = onValue(ref(db, 'chat'), (snap) => { renderChat(snap.val()); });
   }
 });
@@ -816,6 +647,26 @@ window.sendChat = function() {
 };
 
 // ─── SUGGESTIONS ──────────────────────────────────────────
+function renderSuggestions(data) {
+  const list = document.getElementById('suggestionsList');
+  if (!data) { list.innerHTML = '<p style="color:var(--muted);font-size:0.85rem;">No pending suggestions.</p>'; return; }
+  const pending = Object.entries(data).filter(([id, s]) => s.status === 'pending');
+  if (pending.length === 0) { list.innerHTML = '<p style="color:var(--muted);font-size:0.85rem;">No pending suggestions.</p>'; return; }
+  list.innerHTML = pending.map(([id, s]) => `
+    <div class="suggestion-item">
+      <div class="s-top">
+        <span class="s-name">${s.name}</span>
+        <div class="s-actions">
+          <button class="approve" onclick="approveSuggestion('${id}')">✓ Approve</button>
+          <button class="reject" onclick="rejectSuggestion('${id}')">✗ Reject</button>
+        </div>
+      </div>
+      <a class="s-link" href="${s.link}" target="_blank" rel="noopener">${s.link}</a>
+      <div class="s-meta">by ${s.submittedByName || 'unknown'}</div>
+    </div>
+  `).join('');
+}
+
 window.openModal = function() {
   if (!currentUser) { showSection('auth'); return; }
   document.getElementById('suggestModal').classList.add('show');
@@ -834,28 +685,6 @@ window.submitSuggestion = async function() {
     alert('Suggestion submitted!');
   } catch (e) { alert('Error: ' + e.message); }
 };
-
-onValue(ref(db, 'suggestions'), (snap) => {
-  if (currentRole !== 'admin' && currentRole !== 'owner') return;
-  const data = snap.val();
-  const list = document.getElementById('suggestionsList');
-  if (!data) { list.innerHTML = '<p style="color:var(--muted);font-size:0.85rem;">No pending suggestions.</p>'; return; }
-  const pending = Object.entries(data).filter(([id, s]) => s.status === 'pending');
-  if (pending.length === 0) { list.innerHTML = '<p style="color:var(--muted);font-size:0.85rem;">No pending suggestions.</p>'; return; }
-  list.innerHTML = pending.map(([id, s]) => `
-    <div class="suggestion-item">
-      <div class="s-top">
-        <span class="s-name">${s.name}</span>
-        <div class="s-actions">
-          <button class="approve" onclick="approveSuggestion('${id}')">✓ Approve</button>
-          <button class="reject" onclick="rejectSuggestion('${id}')">✗ Reject</button>
-        </div>
-      </div>
-      <a class="s-link" href="${s.link}" target="_blank" rel="noopener">${s.link}</a>
-      <div class="s-meta">by ${s.submittedByName || 'unknown'}</div>
-    </div>
-  `).join('');
-});
 
 window.approveSuggestion = async function(id) {
   try {
@@ -905,7 +734,6 @@ window.removeAdmin = async function() {
 
 // ─── NAV ──────────────────────────────────────────────────
 window.showSection = function(id) {
-  // Go back to list if on detail page
   if (id === 'proxies') goBack();
   ['proxies','chat','admin','auth'].forEach(s => {
     const el = document.getElementById(`section-${s}`);
